@@ -4,15 +4,19 @@ export default async function handler(req, res) {
   const { pergunta } = req.body;
 
   try {
-    const response = await fetch("https://yuntian-deng-chatgpt4.hf.space/run/predict", {
+    const response = await fetch("https://mistral-apps-test.hf.space/run/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ data: [`Você é um advogado. Responda com base na legislação brasileira: ${pergunta}`] })
     });
 
     const result = await response.json();
-    const resposta = result.data[0];
 
+    if (!result?.data?.[0]) {
+      return res.status(500).json({ error: "Resposta inválida da IA" });
+    }
+
+    const resposta = result.data[0];
     res.status(200).json({ resposta });
   } catch (error) {
     console.error("Erro ao consultar IA:", error);
