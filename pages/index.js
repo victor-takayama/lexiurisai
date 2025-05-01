@@ -5,10 +5,22 @@ import axios from 'axios'
 export default function Home() {
   const [pergunta, setPergunta] = useState('')
   const [resposta, setResposta] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleConsulta = async () => {
-    const res = await axios.post('/api/consulta', { pergunta })
-    setResposta(res.data.resposta)
+    if (!pergunta.trim()) return
+    setLoading(true)
+    setResposta('')
+
+    try {
+      const res = await axios.post('/api/consulta', { pergunta })
+      setResposta(res.data.resposta)
+    } catch (error) {
+      setResposta('Erro ao consultar a IA. Tente novamente mais tarde.')
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -23,12 +35,18 @@ export default function Home() {
           onChange={(e) => setPergunta(e.target.value)}
         />
         <button 
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
           onClick={handleConsulta}
+          disabled={loading}
         >
-          Consultar IA
+          {loading ? 'Consultando...' : 'Consultar IA'}
         </button>
-        {resposta && <div className="mt-4 p-4 bg-gray-100 rounded">{resposta}</div>}
+
+        {resposta && (
+          <div className="mt-4 p-4 bg-gray-100 rounded whitespace-pre-line">
+            {resposta}
+          </div>
+        )}
       </div>
     </div>
   )
