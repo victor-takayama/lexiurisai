@@ -4,10 +4,10 @@ export default async function handler(req, res) {
   const { pergunta } = req.body;
 
   try {
-    const response = await fetch("https://AreebModel-Mistral-7B-Instruct-v0-2-Chatbot.hf.space/run/predict", {
+    const response = await fetch("https://yuntian-deng-chatgpt4.hf.space/run/predict", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: [pergunta] })
+      body: JSON.stringify({ data: [`Você é um advogado. Responda com base na legislação brasileira: ${pergunta}`] })
     });
 
     const result = await response.json();
@@ -15,6 +15,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ resposta });
   } catch (error) {
+    console.error("Erro ao consultar IA:", error);
     res.status(500).json({ error: "Erro ao consultar IA" });
   }
 }

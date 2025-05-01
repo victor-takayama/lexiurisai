@@ -1,3 +1,3 @@
 # LexIuris AI
 
-Assistente Jurídico por Inteligência Artificial.
+Frontend com integração via Hugging Face IA pública
